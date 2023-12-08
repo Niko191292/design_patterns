@@ -26,6 +26,8 @@ class Plane(IVehicle):
 
 
 class FahrzeugFactory:
+    _myGarage: list[IVehicle] = []
+
     _vehicleTyps = {
         Car: Car,
         Ship: Ship,
@@ -34,9 +36,18 @@ class FahrzeugFactory:
 
     def createVehicle(self, typ, name):
         if typ in self._vehicleTyps:
-            return self._vehicleTyps[typ](name)
+            vehicle = self._vehicleTyps[typ](name)
+            self._myGarage.append(vehicle)
+            return vehicle
         else:
             raise ValueError(f"Unknown vehicle: {typ}")
+
+    def deleteVehicleFromGarage(self, vehicle: IVehicle):
+        self._myGarage.remove(vehicle)
+
+    def printGarage(self):
+        for vehicle in self._myGarage:
+            print(vehicle.drive())
 
 
 if __name__ == "__main__":
@@ -45,7 +56,5 @@ if __name__ == "__main__":
     myCar = factory.createVehicle(Car, "Volkswagen Golf")
     MyShip = factory.createVehicle(Ship, "Big yacht")
     MyPlane = factory.createVehicle(Plane, "Boeing 747")
-
-    print(myCar.drive())
-    print(MyShip.drive())
-    print(MyPlane.drive())
+    factory.deleteVehicleFromGarage(MyShip)
+    factory.printGarage()
