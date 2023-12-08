@@ -36,37 +36,49 @@ class Jet(Vehicle):
         return f"{self.name} makes a looping."
 
 
-class VehicleFactory:
-    _myGarage: list[Vehicle] = []
+class Garage():
+    _vehicles: list[Vehicle] = []
 
-    _legitTypes = [Car, Ship, Plane, Jet]
-
-    def createVehicle(self, typ: type, name: str) -> Vehicle:
-        if (typ in self._legitTypes):
-            vehicle = typ(name)
-            self._myGarage.append(vehicle)
-            return vehicle
-        else:
-            raise NotImplementedError(f"Unknown vehicle: {typ}")
+    def deliverVehicleToGarage(self, vehicle: Vehicle):
+        self._vehicles.append(vehicle)
 
     def deleteVehicleFromGarage(self, vehicle: Vehicle):
-        self._myGarage.remove(vehicle)
+        self._vehicles.remove(vehicle)
 
     def printGarage(self):
-        for vehicle in self._myGarage:
+        for vehicle in self._vehicles:
             print(vehicle.drive())
 
             if hasattr(vehicle, 'spez'):
                 print(vehicle.spez())
 
 
+class VehicleFactory:
+    _legitTypes = [Car, Ship, Plane, Jet]
+    _deliverTo: Garage
+
+    def setDelivery(self, garage: Garage):
+        self._deliverTo = garage
+
+    def createVehicle(self, typ: type, name: str) -> Vehicle:
+        if (typ in self._legitTypes):
+            vehicle = typ(name)
+            self._deliverTo.deliverVehicleToGarage(vehicle)
+            return vehicle
+        else:
+            raise NotImplementedError(f"Unknown vehicle: {typ}")
+
+
 if __name__ == "__main__":
     factory = VehicleFactory()
+    myGarage = Garage()
+
+    factory.setDelivery(myGarage)
 
     myCar = factory.createVehicle(Car, "Volkswagen Golf")
     MyShip = factory.createVehicle(Ship, "Big yacht")
     MyPlane = factory.createVehicle(Plane, "Boeing 747")
     MyJet = factory.createVehicle(Jet, "F-12")
 
-    factory.deleteVehicleFromGarage(MyShip)
-    factory.printGarage()
+    myGarage.deleteVehicleFromGarage(MyShip)
+    myGarage.printGarage()
