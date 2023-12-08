@@ -1,7 +1,7 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
-class IVehicle:
+class Vehicle(ABC):
     def __init__(self, name: str):
         self.name = name
 
@@ -10,51 +10,63 @@ class IVehicle:
         pass
 
 
-class Car(IVehicle):
+class Car(Vehicle):
     def drive(self):
         return f"{self.name} is driving on the road."
 
+    def spez(self):
+        return f"{self.name} special ability"
 
-class Ship(IVehicle):
+
+class Ship(Vehicle):
     def drive(self):
         return f"{self.name} is sailing on the water."
 
 
-class Plane(IVehicle):
+class Plane(Vehicle):
     def drive(self):
         return f"{self.name} is flying in the sky."
 
 
-class FahrzeugFactory:
-    _myGarage: list[IVehicle] = []
+class Jet(Vehicle):
+    def drive(self):
+        return f"{self.name} is flying very very fast in the sky."
 
-    _vehicleTyps = {
-        Car: Car,
-        Ship: Ship,
-        Plane: Plane
-    }
+    def spez(self):
+        return f"{self.name} makes a looping."
 
-    def createVehicle(self, typ, name):
-        if typ in self._vehicleTyps:
-            vehicle = self._vehicleTyps[typ](name)
+
+class VehicleFactory:
+    _myGarage: list[Vehicle] = []
+
+    _legitTypes = [Car, Ship, Plane, Jet]
+
+    def createVehicle(self, typ: type, name: str) -> Vehicle:
+        if (typ in self._legitTypes):
+            vehicle = typ(name)
             self._myGarage.append(vehicle)
             return vehicle
         else:
-            raise ValueError(f"Unknown vehicle: {typ}")
+            raise NotImplementedError(f"Unknown vehicle: {typ}")
 
-    def deleteVehicleFromGarage(self, vehicle: IVehicle):
+    def deleteVehicleFromGarage(self, vehicle: Vehicle):
         self._myGarage.remove(vehicle)
 
     def printGarage(self):
         for vehicle in self._myGarage:
             print(vehicle.drive())
 
+            if hasattr(vehicle, 'spez'):
+                print(vehicle.spez())
+
 
 if __name__ == "__main__":
-    factory = FahrzeugFactory()
+    factory = VehicleFactory()
 
     myCar = factory.createVehicle(Car, "Volkswagen Golf")
     MyShip = factory.createVehicle(Ship, "Big yacht")
     MyPlane = factory.createVehicle(Plane, "Boeing 747")
+    MyJet = factory.createVehicle(Jet, "F-12")
+
     factory.deleteVehicleFromGarage(MyShip)
     factory.printGarage()
