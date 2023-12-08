@@ -9,17 +9,17 @@ class Strategy(ABC):
 
 class ConcreteStrategyA(Strategy):
     def execute(self, data):
-        return f"Strategie A mit Daten {data}"
+        return f"{self.__class__.__name__} with data '{data}'"
 
 
 class ConcreteStrategyB(Strategy):
     def execute(self, data):
-        return f"Strategie B mit Daten {data}"
+        return f"{self.__class__.__name__} with data '{data}'"
 
 
 class ConcreteStrategyC(Strategy):
     def execute(self, data):
-        return f"Strategie C mit Daten {data}"
+        return f"{self.__class__.__name__} with data '{data}'"
 
 
 class Context:
@@ -38,18 +38,19 @@ class Context:
 
 
 if __name__ == "__main__":
-    data = "Beispiel"
+    data = "Example"
 
-    # Kontext mit Strategie A
+    # Strategy A
     context = Context(ConcreteStrategyA())
     print(context.execute_strategy(data))
 
-    # Wechsel zu Strategie B
+    # Switch to Strategy B
     context.set_strategy(ConcreteStrategyB())
     print(context.execute_strategy(data))
 
-    # Wechsel zu Strategie C
+    # Switch Strategy C
     context.set_strategy(ConcreteStrategyC())
     print(context.execute_strategy(data))
 
+    # Switch and Execute in one Method
     print(context.execute_with_specific_strategy(data, ConcreteStrategyA()))
