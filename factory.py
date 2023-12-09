@@ -36,7 +36,7 @@ class Jet(Vehicle):
         return f"{self.name} makes a looping."
 
 
-class Garage():
+class Garage:
     _vehicles: list[Vehicle] = []
 
     def deliverVehicleToGarage(self, vehicle: Vehicle):
@@ -49,7 +49,7 @@ class Garage():
         for vehicle in self._vehicles:
             print(vehicle.drive())
 
-            if hasattr(vehicle, 'spez'):
+            if hasattr(vehicle, "spez"):
                 print(vehicle.spez())
 
 
@@ -57,11 +57,14 @@ class VehicleFactory:
     _legitTypes = [Car, Ship, Plane, Jet]
     _deliverTo: Garage
 
+    def __init__(self, garage: Garage) -> None:
+        self._deliverTo = garage
+
     def setDelivery(self, garage: Garage):
         self._deliverTo = garage
 
     def createVehicle(self, typ: type, name: str) -> Vehicle:
-        if (typ in self._legitTypes):
+        if typ in self._legitTypes:
             vehicle = typ(name)
             self._deliverTo.deliverVehicleToGarage(vehicle)
             return vehicle
@@ -70,10 +73,8 @@ class VehicleFactory:
 
 
 if __name__ == "__main__":
-    factory = VehicleFactory()
     myGarage = Garage()
-
-    factory.setDelivery(myGarage)
+    factory = VehicleFactory(myGarage)
 
     myCar = factory.createVehicle(Car, "Volkswagen Golf")
     MyShip = factory.createVehicle(Ship, "Big yacht")
